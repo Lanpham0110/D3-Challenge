@@ -1,6 +1,6 @@
 // @TODO: YOUR CODE HERE!
 // Define SVG area dimensions
-var svgWidth = 980;
+var svgWidth = 900;
 var svgHeight = 600;
 
 // Define the chart's margins as an object
@@ -8,7 +8,7 @@ var margin = {
     top: 20,
     right: 100,
     bottom: 100,
-    left: 80
+    left: 90
 };
 
 // Define dimensions of the chart area
@@ -27,81 +27,15 @@ var svg = d3
 var chartGroup = svg.append("g")
     .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
+ 
 
 // Initial Params for y
 var chosenYAxis = "healthcare";
 // Initial Params for x
 var chosenXAxis = "poverty";
 
-// function used for updating x-scale upon click on axis label
-function xScale(USA, chosenXAxis) {
-  // create scales functions for the chart
-  var xLinearScale = d3.scaleLinear()
-    .domain([d3.min(USA, d => d[chosenXAxis])*.882,
-      d3.max(USA, d => d[chosenXAxis])*1.0816
-    ])
-    .range([0, width]);
-  // console.log(xLinearScale);
-  return xLinearScale;
-}
-
-// function used for updating y-scale upon click on axis label
-function yScale(USA, chosenYAxis) {
-    // create scales function for the chart
-    var yLinearScale = d3.scaleLinear()
-      .domain([d3.min(USA, d => d[chosenYAxis]) *0.8 ,
-        d3.max(USA, d => d[chosenYAxis]) *1.2
-      ])
-      .range([height, 0]);
-    return yLinearScale;
-  }
-  
-  
-  // function used for updating xAxis upon click on axis label
-  function renderAxes(newXScale, xAxis) {
-    var bottomAxis = d3.axisBottom(newXScale);
-  
-    xAxis.transition()
-      .duration(1200)
-      .call(bottomAxis);
-    return xAxis;
-  }
-  
-  // function used for updating yAxis upon click on axis label
-  function renderyAxes(newYScale, yAxis) {
-    var leftAxis = d3.axisLeft(newYScale);
-  
-    yAxis.transition()
-      .duration(1200)
-      .call(leftAxis);
-    return yAxis;
-  }
-  
-  // function used for updating circles group with a transition to new circles
-  function renderCircles(circlesGroup, newXScale, chosenXAxis, newYScale, chosenYAxis) {
-  
-    circlesGroup.transition()
-      .duration(1200)
-      .attr("cx", d => newXScale(d[chosenXAxis]))
-      .attr("cy", d => newYScale(d[chosenYAxis]));
-    return circlesGroup;
-  }
-  
-  // Function used for updating Text Group with a transition to new text
-  function renderText(textGroup, newXScale, chosenXAxis, newYScale, chosenYAxis) {
-  
-    textGroup.transition()
-      .duration(1200)
-      .attr("x", d => newXScale(d[chosenXAxis]))
-      .attr("y", d => newYScale(d[chosenYAxis]))
-      // .attr("axis-text", true);
-    return textGroup;
-  }
-  
-  
-  
-  // function used for updating circles group with new tooltip
-  function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup, textGroup) {
+// function used for updating circles group with new tooltip
+function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup, textGroup) {
   var xlabel;
     if (chosenXAxis === "poverty") {
       var xlabel = "Poverty (%)";
@@ -139,9 +73,9 @@ function yScale(USA, chosenYAxis) {
       toolTip.show(data);
     })
       // onmouseout event
-      .on("mouseout", function(data) {
-        toolTip.hide(data);
-      });
+    .on("mouseout", function(data) {
+      toolTip.hide(data);
+    });
   
   // Text Tooltip
     textGroup.call(toolTip);
@@ -150,11 +84,76 @@ function yScale(USA, chosenYAxis) {
       toolTip.show(data);
     })
       // onmouseout Event
-      .on("mouseout", function(data) {
-        toolTip.hide(data);
-      });
+    .on("mouseout", function(data) {
+      toolTip.hide(data);
+    });
     return circlesGroup;
   }
+
+  // function used for updating x-scale upon click on axis label
+  function xScale(myData, chosenXAxis) {
+    // create scales functions for the chart
+    var xLinearScale = d3.scaleLinear()
+      .domain([d3.min(myData, d => d[chosenXAxis])*.882,
+        d3.max(myData, d => d[chosenXAxis])*1.0816
+      ])
+      .range([0, width]);
+    // console.log(xLinearScale);
+    return xLinearScale;
+  }
+
+// function used for updating y-scale upon click on axis label
+  function yScale(myData, chosenYAxis) {
+    // create scales function for the chart
+    var yLinearScale = d3.scaleLinear()
+      .domain([d3.min(myData, d => d[chosenYAxis]) *0.8 ,
+        d3.max(myData, d => d[chosenYAxis]) *1.2
+      ])
+      .range([height, 0]);
+    return yLinearScale;
+  }
+  
+  // function used for updating circles group with a transition to new circles
+  function renderCircles(circlesGroup, newXScale, chosenXAxis, newYScale, chosenYAxis) {
+  
+    circlesGroup.transition()
+      .duration(1200)
+      .attr("cx", d => newXScale(d[chosenXAxis]))
+      .attr("cy", d => newYScale(d[chosenYAxis]));
+    return circlesGroup;
+  }
+  
+  // Function used for updating Text Group with a transition to new text
+  function renderText(textGroup, newXScale, chosenXAxis, newYScale, chosenYAxis) {
+  
+    textGroup.transition()
+      .duration(1200)
+      .attr("x", d => newXScale(d[chosenXAxis]))
+      .attr("y", d => newYScale(d[chosenYAxis]))
+      .attr("axis-text", true);
+    return textGroup;
+  }
+  
+  // function used for updating xAxis upon click on axis label
+  function renderAxes(newXScale, xAxis) {
+    var bottomAxis = d3.axisBottom(newXScale);
+  
+    xAxis.transition()
+      .duration(1200)
+      .call(bottomAxis);
+    return xAxis;
+  }
+  
+  // function used for updating yAxis upon click on axis label
+  function renderyAxes(newYScale, yAxis) {
+    var leftAxis = d3.axisLeft(newYScale);
+  
+    yAxis.transition()
+      .duration(1200)
+      .call(leftAxis);
+    return yAxis;
+  }
+  
   
     // Load data from csv
 d3.csv("assets/data/data.csv").then(function(myData,err) {
@@ -252,7 +251,7 @@ d3.csv("assets/data/data.csv").then(function(myData,err) {
     .attr("transform","rotate(-90)");
   
     var obeselabel = ylabelsGroup.append("text")
-      .attr("y", 0-margin.left +10)
+      .attr("y", 0-margin.left +15)
       .attr("x", 0-(height/2))
       .attr("value", "obesity") // value to grab for event listener
       .classed("inactive", true)
@@ -260,14 +259,14 @@ d3.csv("assets/data/data.csv").then(function(myData,err) {
   
     var smokeslabel = ylabelsGroup.append("text")
       .attr("x", 0-(height/2))
-      .attr("y", 0-margin.left +30)
+      .attr("y", 0-margin.left +35)
       .attr("value", "smokes") // value to grab for event listener
       .classed("inactive", true)
       .text("Smokes (%)");
   
     var healthcarelabel = ylabelsGroup.append("text")
       .attr("x", 0-(height/2))
-      .attr("y", 0-margin.left +50)
+      .attr("y", 0-margin.left +55)
       .attr("value", "healthcare") // value to grab for event listener
       .classed("active", true)
       .text("Lacks Healthcare (%)");
@@ -286,7 +285,7 @@ d3.csv("assets/data/data.csv").then(function(myData,err) {
           // replaces chosenXAxis with value
           chosenXAxis = value;
           // updates x scale for new data
-          xLinearScale = xScale(USA, chosenXAxis);
+          xLinearScale = xScale(myData, chosenXAxis);
           // updates x axis with transition
           xAxis = renderAxes(xLinearScale, xAxis);
           // updates circles with new x values
@@ -294,7 +293,7 @@ d3.csv("assets/data/data.csv").then(function(myData,err) {
           // updates tooltips with new info
           circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup, textGroup);
           // Updates Text with New Values
-          textGroup = renderText(textGroup, xLinearScale, chosenXAxis, yLinearScale, chosenYAxis)
+          textGroup = renderText(textGroup, xLinearScale, chosenXAxis, yLinearScale, chosenYAxis);
           
           // changes classes to change bold text
           if (chosenXAxis === "poverty") {
@@ -344,7 +343,7 @@ d3.csv("assets/data/data.csv").then(function(myData,err) {
           // replaces chosenXAxis with value
           chosenYAxis = valueY;
           // updates y scale for new data
-          yLinearScale = yScale(USA, chosenYAxis);
+          yLinearScale = yScale(myData, chosenYAxis);
           // updates y axis with transition
           yAxis = renderyAxes(yLinearScale, yAxis);
           // updates circles with new x values
